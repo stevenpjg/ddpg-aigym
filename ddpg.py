@@ -3,6 +3,7 @@ import numpy as np
 from actor_net import ActorNet
 from critic_net import CriticNet
 from collections import deque
+from gym.spaces import Box, Discrete
 import random
 
 REPLAY_MEMORY_SIZE = 1000000
@@ -16,8 +17,9 @@ class DDPG:
         self.num_actions = env.action_space.shape[0]
         
         #Initialize Actor Network:
+        action_bound = env.action_space.high
         self.critic_net = CriticNet(self.num_states, self.num_actions) #self.actor_net is an object
-        self.actor_net = ActorNet(self.num_states, self.num_actions)
+        self.actor_net = ActorNet(self.num_states, self.num_actions, action_bound)
         
         #Initialize Buffer Network:
         self.replay_memory = deque()
