@@ -80,8 +80,8 @@ class CriticNet:
         
         self.sess.run(self.optimizer, feed_dict={self.critic_state_in: state_t_batch, self.critic_action_in:action_batch, self.q_value_in: y_i_batch})
         
-    def evaluate_critic(self,state_t):
-        return self.sess.run(self.actor_model, feed_dict={self.actor_state_in:state_t})        
+    #def evaluate_critic(self,state_t):
+        #return self.sess.run(self.actor_model, feed_dict={self.actor_state_in:state_t})        
     
     def evaluate_target_critic(self,state_t_1,action_t_1):
         return self.sess.run(self.t_critic_q_model, feed_dict={self.t_critic_state_in: state_t_1, self.t_critic_action_in: action_t_1})    
