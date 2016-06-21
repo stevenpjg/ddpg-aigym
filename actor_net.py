@@ -10,11 +10,12 @@ TAU = 0.0001
 class ActorNet:
     """ Actor Network Model of DDPG Algorithm """
     
-    def __init__(self,num_states,num_actions):
+    def __init__(self,num_states,num_actions, action_bound):
         self.g=tf.Graph()
         with self.g.as_default():
             self.sess = tf.InteractiveSession()
             
+            self.action_bound = action_bound
             #actor network model parameters:
             self.W1_a, self.B1_a, self.W2_a, self.B2_a, self.W3_a, self.B3_a,\
             self.actor_state_in, self.actor_model = self.create_actor_net(num_states, num_actions)
@@ -59,7 +60,7 @@ class ActorNet:
         H1_a=tf.nn.softplus(tf.matmul(actor_state_in,W1_a)+B1_a)
         H2_a=tf.nn.tanh(tf.matmul(H1_a,W2_a)+B2_a)
         actor_model=tf.matmul(H2_a,W3_a) + B3_a
-        actor_model=3*tf.nn.tanh(actor_model) #value 3 depends on the action bounds
+        actor_model= self.action_bound * tf.nn.tanh(actor_model) # to normalize the action space
         return W1_a, B1_a, W2_a, B2_a, W3_a, B3_a, actor_state_in, actor_model
         
         
