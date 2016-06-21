@@ -55,13 +55,13 @@ class CriticNet:
             
     def create_critic_net(self, num_states=4, num_actions=1):
         N_HIDDEN_1 = 400
-        N_HIDDEN_2 = 400
+        N_HIDDEN_2 = 300
         critic_state_in = tf.placeholder("float",[None,num_states])
         critic_action_in = tf.placeholder("float",[None,num_actions])    
     
         W1_c = tf.Variable(tf.random_uniform([num_states,N_HIDDEN_1],-1/math.sqrt(num_states),1/math.sqrt(num_states)))
         B1_c = tf.Variable(tf.random_uniform([N_HIDDEN_1],-1/math.sqrt(num_states),1/math.sqrt(num_states)))
-        W2_c = tf.Variable(tf.random_uniform([N_HIDDEN_2,N_HIDDEN_2],-1/math.sqrt(N_HIDDEN_1+num_actions),1/math.sqrt(N_HIDDEN_1+num_actions)))    
+        W2_c = tf.Variable(tf.random_uniform([N_HIDDEN_1,N_HIDDEN_2],-1/math.sqrt(N_HIDDEN_1+num_actions),1/math.sqrt(N_HIDDEN_1+num_actions)))    
         W2_action_c = tf.Variable(tf.random_uniform([num_actions,N_HIDDEN_2],-1/math.sqrt(N_HIDDEN_1+num_actions),1/math.sqrt(N_HIDDEN_1+num_actions)))    
         B2_c= tf.Variable(tf.random_uniform([N_HIDDEN_2],-1/math.sqrt(N_HIDDEN_1+num_actions),1/math.sqrt(N_HIDDEN_1+num_actions))) 
         W3_c= tf.Variable(tf.random_uniform([N_HIDDEN_2,1],-0.003,0.003))
@@ -79,9 +79,7 @@ class CriticNet:
         
         
         self.sess.run(self.optimizer, feed_dict={self.critic_state_in: state_t_batch, self.critic_action_in:action_batch, self.q_value_in: y_i_batch})
-        
-    #def evaluate_critic(self,state_t):
-        #return self.sess.run(self.actor_model, feed_dict={self.actor_state_in:state_t})        
+             
     
     def evaluate_target_critic(self,state_t_1,action_t_1):
         return self.sess.run(self.t_critic_q_model, feed_dict={self.t_critic_state_in: state_t_1, self.t_critic_action_in: action_t_1})    
