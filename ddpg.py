@@ -5,6 +5,7 @@ from critic_net import CriticNet
 from collections import deque
 from gym.spaces import Box, Discrete
 import random
+from tensorflow_grad_inverter import grad_inverter
 
 REPLAY_MEMORY_SIZE = 1000000
 BATCH_SIZE = 64
@@ -27,10 +28,12 @@ class DDPG:
         #Intialize time step:
         self.time_step = 0
         
+        #invert gradients (softthresholding)
+        action_bounds = [[3], [-3]] #specify upper bound and lower bound of action space
+        self.grad_inv = grad_inverter(action_bounds)
         
         
     def evaluate_actor(self, state_t):
-        
         return self.actor_net.evaluate_actor(state_t)
     
     def add_experience(self, observation_1, observation_2, action, reward, done):
@@ -43,6 +46,7 @@ class DDPG:
         self.time_step = self.time_step + 1
         if(len(self.replay_memory)>REPLAY_MEMORY_SIZE):
             self.replay_memory.popleft()
+            
         
     def minibatches(self):
         batch = random.sample(self.replay_memory, BATCH_SIZE)
@@ -58,7 +62,8 @@ class DDPG:
         self.reward_batch = [item[3] for item in batch]
         self.reward_batch = np.array(self.reward_batch)
         self.done_batch = [item[4] for item in batch]
-        self.done_batch = np.array(self.done_batch)             
+        self.done_batch = np.array(self.done_batch)  
+                  
                  
     def train(self):
         #sample a random minibatch of N transitions from R
@@ -87,11 +92,11 @@ class DDPG:
         #actions for computing delQ/dela because 
         action_for_delQ = self.evaluate_actor(self.state_t_batch) #think of if you want to take this action or the action_t_batch itself:
         self.del_Q_a = self.critic_net.compute_delQ_a(self.state_t_batch,action_for_delQ)#/BATCH_SIZE
-        
+        self.del_Q_a = self.grad_inv.invert(self.del_Q_a,action_for_delQ)
         # train actor network proportional to delQ/dela and del_Actor_model/del_actor_parameters:
                
         
-        self.actor_net.train_actor(self.state_t_batch,self.del_Q_a[0])
+        self.actor_net.train_actor(self.state_t_batch,self.del_Q_a)
  
         # Update target Critic and actor network
         self.critic_net.update_target_critic()
