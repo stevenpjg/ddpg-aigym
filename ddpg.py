@@ -30,6 +30,12 @@ class DDPG:
         
         #invert gradients (softthresholding)
         action_bounds = [[3], [-3]] #specify upper bound and lower bound of action space
+        #action_bound structure for higher dimension actions[
+        #[max_of_action_dim_0, max_of_action_dim_1, ..., max_of_action_dim_10], 
+        #[min_of_action_dim_0, min_of_action_dim_1, ..., min_of_action_dim_10] 
+        #]
+        
+        
         self.grad_inv = grad_inverter(action_bounds)
         
         
