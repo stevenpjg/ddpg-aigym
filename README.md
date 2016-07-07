@@ -1,8 +1,8 @@
 # ddpg-aigym
-This code contains the implementation of Deep Deterministic Policy Gradiet Algorithm (Lillicrap et al.[arXiv:1509.02971](http://arxiv.org/abs/1509.02971).)in openAi gym environments
+Implementation of Deep Deterministic Policy Gradiet Algorithm (Lillicrap et al.[arXiv:1509.02971](http://arxiv.org/abs/1509.02971).) on openAi gym environments
 
 ## Dependencies
-- Tensorflow
+- [Tensorflow](https://github.com/tensorflow/tensorflow)
 - OpenAi gym
 - Mujoco
 
