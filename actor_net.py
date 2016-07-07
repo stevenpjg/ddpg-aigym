@@ -28,7 +28,7 @@ class ActorNet:
             #cost of actor network:
             self.q_gradient_input = tf.placeholder("float",[None,num_actions]) #gets input from action_gradient computed in critic network file
             self.actor_parameters = [self.W1_a, self.B1_a, self.W2_a, self.B2_a, self.W3_a, self.B3_a]
-            self.parameters_gradients = tf.gradients(self.actor_model,self.actor_parameters,-self.q_gradient_input)#/BATCH_SIZE) 
+            self.parameters_gradients = tf.gradients(self.actor_model,self.actor_parameters,-self.q_gradient_input)#/BATCH_SIZE) changed -self.q_gradient to -
             self.optimizer = tf.train.AdamOptimizer(LEARNING_RATE).apply_gradients(zip(self.parameters_gradients,self.actor_parameters))  
             #initialize all tensor variable parameters:
             self.sess.run(tf.initialize_all_variables())    
@@ -60,7 +60,7 @@ class ActorNet:
         H1_a=tf.nn.softplus(tf.matmul(actor_state_in,W1_a)+B1_a)
         H2_a=tf.nn.tanh(tf.matmul(H1_a,W2_a)+B2_a)
         actor_model=tf.matmul(H2_a,W3_a) + B3_a
-        actor_model= self.action_bound * tf.nn.tanh(actor_model) # to normalize the action space
+        #actor_model= 3 * tf.nn.tanh(actor_model) # to normalize the action space self.action_bound *
         return W1_a, B1_a, W2_a, B2_a, W3_a, B3_a, actor_state_in, actor_model
         
         
