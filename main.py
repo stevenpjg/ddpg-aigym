@@ -1,20 +1,15 @@
 #Implementation of Deep Deterministic Gradient with Theano and Tensor Flow"
-# Author: stevenget
+# Author: Steven Spielberg Pon Kumar stevenpjg
 
 import gym
 from gym.spaces import Box, Discrete
-import time
 import numpy as np
 
 from ddpg import DDPG
-
+from ou_noise import OUNoise
 #specify parameters here:
 episodes=10000
 steps=1000 #steps per episode
-
-
-    
-    
  
 def main():
     experiment= 'InvertedPendulum-v1'
@@ -23,41 +18,56 @@ def main():
     assert isinstance(env.action_space, Box), "action space must be continuous"
     #Randomly initialize critic,actor,target critic, target actor network  and replay buffer   
     agent = DDPG(env)
+    exploration_noise = OUNoise(env.action_space.shape[0])
     counter=0
     total_reward=0
+    num_states = env.observation_space.shape[0]
+    num_actions = env.action_space.shape[0]
+    
+    #saving reward:
+    reward_st = np.array([0])
+    
+    
+    
     for i in xrange(episodes):
-        observation_1 = env.reset()
-        
+        observation = env.reset()
+    
         reward_per_episode = 0
         for t in xrange(steps):
             #rendering environmet (optional)            
             #env.render()
             
-            
+            x = observation
             #select action using actor network model
-            action = agent.evaluate_actor(np.reshape(observation_1,[1,4]))
-            #action plus linear decay noise for expoloration
-            action= action[0] + np.random.randn(env.action_space.shape[0]) / (i + 1)
+            action = agent.evaluate_actor(np.reshape(x,[num_actions,num_states]))
+            
+            noise = exploration_noise.noise()
+            
+                       
+            action = action[0] + noise
+            
             
             print 'Agent.Action :',action
             print '\n'
             print '\n'
-            #time.sleep(3)            
-            #raw_input("Press Enter to continue...")
+            
                       
-            observation_2,reward,done,[]=env.step(action)
+            observation,reward,done,[]=env.step(action)
             #add s_t,s_t+1,action,reward to experience memeroy
-            agent.add_experience(observation_1,observation_2,action,reward,done)
+            agent.add_experience(x,observation,action,reward,done)
             #train critic and actor network
-            if counter > 1000: 
+            if counter > 64: 
                 agent.train()            
             
             reward_per_episode+=reward
-            observation_1 = observation_2
+            
             counter+=1
             #check if episode ends:
             if done:
                 print 'EPISODE: ',i,' Steps: ',t,' Total Reward: ',reward_per_episode
+                exploration_noise.reset()
+                reward_st = np.append(reward_st,reward_per_episode)
+                np.savetxt('episode_reward.txt',reward_st, newline="\n")
                 print '\n'
                 print '\n'
                 break
