@@ -2,7 +2,7 @@
 Implementation of Deep Deterministic Policy Gradiet Algorithm (Lillicrap et al.[arXiv:1509.02971](http://arxiv.org/abs/1509.02971).) on openAi gym environments
 
 ## Dependencies
-- [Tensorflow](https://github.com/tensorflow/tensorflow)
+- Tensorflow
 - OpenAi gym
 - Mujoco
 
