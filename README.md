@@ -1,4 +1,6 @@
 # ddpg-aigym
+
+## Deep Deterministic Policy Gradient
 Implementation of Deep Deterministic Policy Gradiet Algorithm (Lillicrap et al.[arXiv:1509.02971](http://arxiv.org/abs/1509.02971).) with Tensorflow on openAi gym environments
 
 ## How to use
@@ -10,7 +12,7 @@ python main.py
 
 ## Learning Curve
 The learning curve for InvertedPendulum-v1 environment.  
-![alt tag](https://github.com/stevenpjg/ddpg-aigym/blob/master/learning_curve.png =800x600)
+![](https://github.com/stevenpjg/ddpg-aigym/blob/master/learning_curve.png =800x600)
 
 ## Dependencies
 - Tensorflow
