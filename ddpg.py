@@ -1,41 +1,44 @@
-import time
 import numpy as np
 from actor_net import ActorNet
 from critic_net import CriticNet
+from actor_net_bn import ActorNet_bn
+from critic_net_bn import CriticNet_bn
 from collections import deque
 from gym.spaces import Box, Discrete
 import random
 from tensorflow_grad_inverter import grad_inverter
 
-REPLAY_MEMORY_SIZE = 1000000
+REPLAY_MEMORY_SIZE = 10000
 BATCH_SIZE = 64
 GAMMA=0.99
+is_grad_inverter = True
 class DDPG:
+    
     """ Deep Deterministic Policy Gradient Algorithm"""
-    def __init__(self,env):
+    def __init__(self,env, is_batch_norm):
         self.env = env 
         self.num_states = env.observation_space.shape[0]
         self.num_actions = env.action_space.shape[0]
         
-        #Initialize Actor Network:
-        action_bound = env.action_space.high
-        self.critic_net = CriticNet(self.num_states, self.num_actions) #self.actor_net is an object
-        self.actor_net = ActorNet(self.num_states, self.num_actions, action_bound)
+        
+        if is_batch_norm:
+            self.critic_net = CriticNet_bn(self.num_states, self.num_actions) 
+            self.actor_net = ActorNet_bn(self.num_states, self.num_actions)
+            
+        else:
+            self.critic_net = CriticNet(self.num_states, self.num_actions) 
+            self.actor_net = ActorNet(self.num_states, self.num_actions)
         
         #Initialize Buffer Network:
         self.replay_memory = deque()
         
         #Intialize time step:
         self.time_step = 0
+        self.counter = 0
         
-        #invert gradients (softthresholding)
-        action_bounds = [[3], [-3]] #specify upper bound and lower bound of action space
-        #action_bound structure for higher dimension actions[
-        #[max_of_action_dim_0, max_of_action_dim_1, ..., max_of_action_dim_10], 
-        #[min_of_action_dim_0, min_of_action_dim_1, ..., min_of_action_dim_10] 
-        #]
-        
-        
+        action_max = np.array(env.action_space.high).tolist()
+        action_min = np.array(env.action_space.low).tolist()        
+        action_bounds = [action_max,action_min] 
         self.grad_inv = grad_inverter(action_bounds)
         
         
@@ -77,8 +80,6 @@ class DDPG:
         self.action_t_1_batch = self.actor_net.evaluate_target_actor(self.state_t_1_batch)
         #Q'(s_i+1,a_i+1)        
         q_t_1 = self.critic_net.evaluate_target_critic(self.state_t_1_batch,self.action_t_1_batch) 
-        
-        
         self.y_i_batch=[]         
         for i in range(0,BATCH_SIZE):
                            
@@ -90,23 +91,26 @@ class DDPG:
         
         self.y_i_batch=np.array(self.y_i_batch)
         self.y_i_batch = np.reshape(self.y_i_batch,[len(self.y_i_batch),1])
+        
         # Update critic by minimizing the loss
         self.critic_net.train_critic(self.state_t_batch, self.action_batch,self.y_i_batch)
         
         # Update actor proportional to the gradients:
+        action_for_delQ = self.evaluate_actor(self.state_t_batch) 
         
-        #actions for computing delQ/dela because 
-        action_for_delQ = self.evaluate_actor(self.state_t_batch) #think of if you want to take this action or the action_t_batch itself:
-        self.del_Q_a = self.critic_net.compute_delQ_a(self.state_t_batch,action_for_delQ)#/BATCH_SIZE
-        self.del_Q_a = self.grad_inv.invert(self.del_Q_a,action_for_delQ)
+        if is_grad_inverter:        
+            self.del_Q_a = self.critic_net.compute_delQ_a(self.state_t_batch,action_for_delQ)#/BATCH_SIZE            
+            self.del_Q_a = self.grad_inv.invert(self.del_Q_a,action_for_delQ) 
+        else:
+            self.del_Q_a = self.critic_net.compute_delQ_a(self.state_t_batch,action_for_delQ)[0]#/BATCH_SIZE
+        
         # train actor network proportional to delQ/dela and del_Actor_model/del_actor_parameters:
-               
-        
         self.actor_net.train_actor(self.state_t_batch,self.del_Q_a)
  
         # Update target Critic and actor network
         self.critic_net.update_target_critic()
         self.actor_net.update_target_actor()
+        
                 
         
         
