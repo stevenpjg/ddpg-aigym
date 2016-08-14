@@ -12,8 +12,7 @@ python main.py
 
 ## Learning Curve
 The learning curve for InvertedPendulum-v1 environment.  
-![](https://github.com/stevenpjg/ddpg-aigym/blob/master/learning_curve.png =800x600)
-
+<img src="https://github.com/stevenpjg/ddpg-aigym/blob/master/learning_curve.png" width="800" height="600" />
 ## Dependencies
 - Tensorflow
 - OpenAi gym
