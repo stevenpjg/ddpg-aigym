@@ -2,11 +2,11 @@
 Implementation of Deep Deterministic Policy Gradiet Algorithm (Lillicrap et al.[arXiv:1509.02971](http://arxiv.org/abs/1509.02971).) with Tensorflow on openAi gym environments
 
 ## How to use
-'''bash
+```
 git clone https://github.com/stevenpjg/ddpg-aigym.git
 cd ddpg-aigym
 python main.py
-'''
+```
 
 ## Learning Curve
 The learning curve for InvertedPendulum-v1 environment.  
@@ -23,14 +23,14 @@ The learning curve for InvertedPendulum-v1 environment.
 
 ## Note
 To use different environment
-''
+```
 experiment= 'InvertedPendulum-v1' #specify environments here
 
-'''
+```
 To use batch normalization
-'''
+```
 is_batch_norm = True #batch normalization switch
-'''
+```
 Let me know if there are any issues and any clarifications regarding hyperparameter tuning.
 
 
