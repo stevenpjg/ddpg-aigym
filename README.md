@@ -1,7 +1,7 @@
 # ddpg-aigym
 
 ## Deep Deterministic Policy Gradient
-Implementation of Deep Deterministic Policy Gradiet Algorithm (Lillicrap et al.[arXiv:1509.02971](http://arxiv.org/abs/1509.02971).) with Tensorflow on openAi gym environments
+Implementation of Deep Deterministic Policy Gradiet Algorithm (Lillicrap et al.[arXiv:1509.02971](http://arxiv.org/abs/1509.02971).) in Tensorflow
 
 ## How to use
 ```
@@ -32,7 +32,7 @@ To use batch normalization
 ```
 is_batch_norm = True #batch normalization switch
 ```
-Let me know if there are any issues and any clarifications regarding hyperparameter tuning.
+Let me know if there are any issues and clarifications regarding hyperparameter tuning.
 
 
 
