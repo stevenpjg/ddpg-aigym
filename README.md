@@ -19,7 +19,7 @@ The learning curve for InvertedPendulum-v1 environment.
 - Mujoco
 
 ## Features
-- Batch Normalization (good improvement in learning speed)
+- Batch Normalization (improvement in learning speed)
 - Grad-inverter (given in arXiv: [arXiv:1511.04143](http://arxiv.org/abs/1511.04143))
 
 ## Note
