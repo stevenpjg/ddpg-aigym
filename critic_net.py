@@ -1,6 +1,4 @@
 import numpy as np
-import time
-import matplotlib.pyplot as plt
 import tensorflow as tf
 import math
 
@@ -36,8 +34,7 @@ class CriticNet:
             self.action_gradients = [self.act_grad_v[0]/tf.to_float(tf.shape(self.act_grad_v[0])[0])] #this is just divided by batch size
             #from simple actor net:
             self.check_fl = self.action_gradients             
-            
-            #raw_input("Press Enter to continue...")            
+                       
             #initialize all tensor variable parameters:
             self.sess.run(tf.initialize_all_variables())
             
@@ -77,13 +74,10 @@ class CriticNet:
         return W1_c, B1_c, W2_c, W2_action_c, B2_c, W3_c, B3_c, critic_q_model, critic_state_in, critic_action_in
     
     def train_critic(self, state_t_batch, action_batch, y_i_batch ):
-        
-        
         self.sess.run(self.optimizer, feed_dict={self.critic_state_in: state_t_batch, self.critic_action_in:action_batch, self.q_value_in: y_i_batch})
              
     
     def evaluate_target_critic(self,state_t_1,action_t_1):
-       
         return self.sess.run(self.t_critic_q_model, feed_dict={self.t_critic_state_in: state_t_1, self.t_critic_action_in: action_t_1})    
         
     def compute_delQ_a(self,state_t,action_t):
