@@ -2,13 +2,13 @@
 #https://github.com/MOCR/
 
 import tensorflow as tf
-import tensorflow_session as tfs
+
 
 
 class grad_inverter:
     def __init__(self, action_bounds):
 
-        self.sess = tfs.tfs.session        
+        self.sess = tf.InteractiveSession()       
         
         self.action_size = len(action_bounds[0])
         
