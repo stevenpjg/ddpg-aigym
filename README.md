@@ -10,9 +10,16 @@ cd ddpg-aigym
 python main.py
 ```
 
+## During training
+<img src="https://www.stevenspielberg.me/projects/images/ddpg_train.gif" width="507" height="280" />
+
+## Once trained
+<img src="https://www.stevenspielberg.me/projects/images/ddpg_test.gif" width="470" height="235" />
+
 ## Learning Curve
 The learning curve for InvertedPendulum-v1 environment.  
 <img src="https://github.com/stevenpjg/ddpg-aigym/blob/master/learning_curve.png" width="800" height="600" />
+
 ## Dependencies
 - Tensorflow
 - OpenAi gym
