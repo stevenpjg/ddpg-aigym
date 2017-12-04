@@ -50,6 +50,15 @@ class CriticNet:
 				self.t_B3_c.assign(self.B3_c)
 			])
             
+            self.update_target_critic_op = [
+                self.t_W1_c.assign(TAU*self.W1_c+(1-TAU)*self.t_W1_c),
+                self.t_B1_c.assign(TAU*self.B1_c+(1-TAU)*self.t_B1_c),
+                self.t_W2_c.assign(TAU*self.W2_c+(1-TAU)*self.t_W2_c),
+                self.t_W2_action_c.assign(TAU*self.W2_action_c+(1-TAU)*self.t_W2_action_c),
+                self.t_B2_c.assign(TAU*self.B2_c+(1-TAU)*self.t_B2_c),
+                self.t_W3_c.assign(TAU*self.W3_c+(1-TAU)*self.t_W3_c),
+                self.t_B3_c.assign(TAU*self.B3_c+(1-TAU)*self.t_B3_c)
+            ]
             
     def create_critic_net(self, num_states=4, num_actions=1):
         N_HIDDEN_1 = 400
@@ -90,14 +99,6 @@ class CriticNet:
         return self.sess.run(self.action_gradients, feed_dict={self.critic_state_in: state_t,self.critic_action_in: action_t})
 
     def update_target_critic(self):
-        self.sess.run([
-				self.t_W1_c.assign(TAU*self.W1_c+(1-TAU)*self.t_W1_c),
-				self.t_B1_c.assign(TAU*self.B1_c+(1-TAU)*self.t_B1_c),
-				self.t_W2_c.assign(TAU*self.W2_c+(1-TAU)*self.t_W2_c),
-				self.t_W2_action_c.assign(TAU*self.W2_action_c+(1-TAU)*self.t_W2_action_c),
-				self.t_B2_c.assign(TAU*self.B2_c+(1-TAU)*self.t_B2_c),
-				self.t_W3_c.assign(TAU*self.W3_c+(1-TAU)*self.t_W3_c),
-				self.t_B3_c.assign(TAU*self.B3_c+(1-TAU)*self.t_B3_c)
-			])
+        self.sess.run(self.update_target_critic_op)
 
 

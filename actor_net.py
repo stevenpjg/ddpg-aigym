@@ -40,6 +40,14 @@ class ActorNet:
 				self.t_B2_a.assign(self.B2_a),
 				self.t_W3_a.assign(self.W3_a),
 				self.t_B3_a.assign(self.B3_a)])
+
+            self.update_target_actor_op = [
+                self.t_W1_a.assign(TAU*self.W1_a+(1-TAU)*self.t_W1_a),
+                self.t_B1_a.assign(TAU*self.B1_a+(1-TAU)*self.t_B1_a),
+                self.t_W2_a.assign(TAU*self.W2_a+(1-TAU)*self.t_W2_a),
+                self.t_B2_a.assign(TAU*self.B2_a+(1-TAU)*self.t_B2_a),
+                self.t_W3_a.assign(TAU*self.W3_a+(1-TAU)*self.t_W3_a),
+                self.t_B3_a.assign(TAU*self.B3_a+(1-TAU)*self.t_B3_a)]
         
 
 
@@ -72,12 +80,6 @@ class ActorNet:
         self.sess.run(self.optimizer, feed_dict={ self.actor_state_in: actor_state_in, self.q_gradient_input: q_gradient_input})
     
     def update_target_actor(self):
-        self.sess.run([
-				self.t_W1_a.assign(TAU*self.W1_a+(1-TAU)*self.t_W1_a),
-				self.t_B1_a.assign(TAU*self.B1_a+(1-TAU)*self.t_B1_a),
-				self.t_W2_a.assign(TAU*self.W2_a+(1-TAU)*self.t_W2_a),
-				self.t_B2_a.assign(TAU*self.B2_a+(1-TAU)*self.t_B2_a),
-				self.t_W3_a.assign(TAU*self.W3_a+(1-TAU)*self.t_W3_a),
-				self.t_B3_a.assign(TAU*self.B3_a+(1-TAU)*self.t_B3_a)])    
+        self.sess.run(self.update_target_actor_op)    
 
         

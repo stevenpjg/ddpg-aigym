@@ -87,7 +87,18 @@ class CriticNet_bn:
 				self.t_B3_c.assign(self.B3_c)
 			])
             
-    
+            self.update_target_critic_op = [
+                self.t_W1_c.assign(TAU*self.W1_c+(1-TAU)*self.t_W1_c),
+                self.t_B1_c.assign(TAU*self.B1_c+(1-TAU)*self.t_B1_c),  
+                self.t_W2_c.assign(TAU*self.W2_c+(1-TAU)*self.t_W2_c),
+                self.t_W2_action_c.assign(TAU*self.W2_action_c+(1-TAU)*self.t_W2_action_c),
+                self.t_B2_c.assign(TAU*self.B2_c+(1-TAU)*self.t_B2_c),
+                self.t_W3_c.assign(TAU*self.W3_c+(1-TAU)*self.t_W3_c),
+                self.t_B3_c.assign(TAU*self.B3_c+(1-TAU)*self.t_B3_c),
+                self.t_H1_c_bn.updateTarget,
+                self.t_H2_c_bn.updateTarget
+            ]
+
     def train_critic(self, state_t_batch, action_batch, y_i_batch ):
         self.sess.run([self.optimizer,self.H1_c_bn.train_mean,self.H1_c_bn.train_var,self.H2_c_bn.train_mean,self.H2_c_bn.train_var,self.t_H1_c_bn.train_mean,self.t_H1_c_bn.train_var,self.t_H2_c_bn.train_mean,self.t_H2_c_bn.train_var], feed_dict={self.critic_state_in: state_t_batch,self.t_critic_state_in: state_t_batch, self.critic_action_in:action_batch,self.t_critic_action_in:action_batch, self.q_value_in: y_i_batch,self.is_training: True})
         
@@ -99,17 +110,7 @@ class CriticNet_bn:
         return self.sess.run(self.action_gradients, feed_dict={self.critic_state_in: state_t,self.critic_action_in: action_t,self.is_training: False})
 
     def update_target_critic(self):
-        self.sess.run([
-				self.t_W1_c.assign(TAU*self.W1_c+(1-TAU)*self.t_W1_c),
-                  self.t_B1_c.assign(TAU*self.B1_c+(1-TAU)*self.t_B1_c),  
-				self.t_W2_c.assign(TAU*self.W2_c+(1-TAU)*self.t_W2_c),
-				self.t_W2_action_c.assign(TAU*self.W2_action_c+(1-TAU)*self.t_W2_action_c),
-				self.t_B2_c.assign(TAU*self.B2_c+(1-TAU)*self.t_B2_c),
-                  self.t_W3_c.assign(TAU*self.W3_c+(1-TAU)*self.t_W3_c),
-				self.t_B3_c.assign(TAU*self.B3_c+(1-TAU)*self.t_B3_c),
-                  self.t_H1_c_bn.updateTarget,
-                  self.t_H2_c_bn.updateTarget
-			])
+        self.sess.run(self.update_target_critic_op)
          
 
 

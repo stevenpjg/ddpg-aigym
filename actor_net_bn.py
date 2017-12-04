@@ -74,6 +74,17 @@ class ActorNet_bn:
 				self.t_B2_a.assign(self.B2_a),
 				self.t_W3_a.assign(self.W3_a),
 				self.t_B3_a.assign(self.B3_a)])
+
+            self.update_target_actor_op = [
+                self.t_W1_a.assign(TAU*self.W1_a+(1-TAU)*self.t_W1_a),
+                self.t_B1_a.assign(TAU*self.B1_a+(1-TAU)*self.t_B1_a),  
+                self.t_W2_a.assign(TAU*self.W2_a+(1-TAU)*self.t_W2_a),
+                self.t_B2_a.assign(TAU*self.B2_a+(1-TAU)*self.t_B2_a),  
+                self.t_W3_a.assign(TAU*self.W3_a+(1-TAU)*self.t_W3_a),
+                self.t_B3_a.assign(TAU*self.B3_a+(1-TAU)*self.t_B3_a),
+                self.t_H1_a_bn.updateTarget,
+                self.t_H2_a_bn.updateTarget,
+            ]
             
         
     def evaluate_actor(self,state_t):
@@ -87,15 +98,6 @@ class ActorNet_bn:
         self.sess.run([self.optimizer,self.H1_a_bn.train_mean,self.H1_a_bn.train_var,self.H2_a_bn.train_mean,self.H2_a_bn.train_var,self.t_H1_a_bn.train_mean,self.t_H1_a_bn.train_var,self.t_H2_a_bn.train_mean, self.t_H2_a_bn.train_var], feed_dict={ self.actor_state_in: actor_state_in,self.t_actor_state_in: actor_state_in, self.q_gradient_input: q_gradient_input,self.is_training: True,self.t_is_training: True})
         
     def update_target_actor(self):
-        self.sess.run([
-				self.t_W1_a.assign(TAU*self.W1_a+(1-TAU)*self.t_W1_a),
-                  self.t_B1_a.assign(TAU*self.B1_a+(1-TAU)*self.t_B1_a),  
-				self.t_W2_a.assign(TAU*self.W2_a+(1-TAU)*self.t_W2_a),
-                  self.t_B2_a.assign(TAU*self.B2_a+(1-TAU)*self.t_B2_a),  
-				self.t_W3_a.assign(TAU*self.W3_a+(1-TAU)*self.t_W3_a),
-				self.t_B3_a.assign(TAU*self.B3_a+(1-TAU)*self.t_B3_a),
-                  self.t_H1_a_bn.updateTarget,
-                  self.t_H2_a_bn.updateTarget,
-    ])    
+        self.sess.run(self.update_target_actor_op)    
         
         
