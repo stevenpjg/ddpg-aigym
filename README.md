@@ -21,7 +21,7 @@ The learning curve for InvertedPendulum-v1 environment.
 <img src="https://github.com/stevenpjg/ddpg-aigym/blob/master/learning_curve.png" width="800" height="600" />
 
 ## Dependencies
-- Tensorflow (Developed in tensorflow version 0.11.0rc0 [CPU version](https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.11.0rc0-cp27-none-linux_x86_64.whl) [GPU version](https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-0.11.0rc0-cp35-cp35m-linux_x86_64.whl))
+- Tensorflow (Developed in tensorflow version 0.11.0rc0 [[CPU version]](https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.11.0rc0-cp27-none-linux_x86_64.whl) [[GPU version]](https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-0.11.0rc0-cp35-cp35m-linux_x86_64.whl))
 - OpenAi gym
 - Mujoco
 
